@@ -26,9 +26,10 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-primary);
             background-color: #f5f5f7;
+            /* Wallpaper style ala MacOS */
             background-image: 
                 radial-gradient(at 0% 0%, hsla(253,16%,91%,1) 0, transparent 50%), 
                 radial-gradient(at 50% 0%, hsla(225,39%,91%,1) 0, transparent 50%), 
@@ -103,6 +104,7 @@
             letter-spacing: 0.05em;
         }
 
+        /* Badge Styling */
         .badge.popular { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
         .badge.new { background: rgba(46, 204, 113, 0.1); color: #28a745; }
         .badge.best-seller { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
@@ -168,10 +170,10 @@
 
         #status-message {
             text-align: center;
-            padding: 50px;
-            font-size: 1.2rem;
+            padding: 20px;
+            font-size: 1rem;
             color: var(--text-secondary);
-            display: none;
+            display: none; /* Default hidden */
         }
 
         @keyframes fadeInDown {
@@ -188,129 +190,141 @@
             <p class="subtitle">Desain eksklusif untuk momen spesial Anda</p>
         </header>
 
+        <!-- Pesan Error/Loading (Default Hidden) -->
         <div id="status-message"></div>
-        <div id="portfolio-grid" class="grid"></div>
+
+        <!-- Grid Container -->
+        <div id="portfolio-grid" class="grid">
+            <!-- Item akan digenerate oleh Javascript disini -->
+        </div>
     </div>
 
     <script>
-        // ⚠️ PENTING: GANTI DENGAN FILE YANG BERADA DI FOLDER SAMA ATAU URL
-        const DATA_FILE = 'data.json';
+        // ⚠️ PENTING: Gunakan file data.js di folder yang SAMA
+        const DATA_FILE = 'data.js'; 
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Fungsi untuk mengecek koneksi dan memuat data
             fetch(DATA_FILE)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Gagal mengambil data: Pastikan file data.json ada di folder yang sama atau upload ke hosting');
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    return response.text(); // Text dulu agar bisa dicek parsing JSON-nya
+                    return response.json(); // Parse JSON langsung
                 })
-                .then(text => {
-                    try {
-                        const jsonData = JSON.parse(text);
-                        renderGallery(jsonData);
-                    } catch (e) {
-                        console.error('Error parsing JSON:', e);
-                        throw new Error('Format file data.json tidak valid. Pastikan tidak ada tanda titik koma di akhir baris atau kata-kata seperti "const portfolioData"');
+                .then(data => {
+                    // Validasi data bukan null dan adalah array
+                    if (!Array.isArray(data)) {
+                        showStatus("Format data tidak valid. Pastikan data.js berisi Array [ {...}, {...} ].");
+                        return;
                     }
+                    
+                    // Render Grid dengan data yang didapat
+                    renderGallery(data);
                 })
                 .catch(error => {
-                    console.error('Fetch error:', error);
-                    const statusDiv = document.getElementById('status-message');
-                    statusDiv.style.display = 'block';
-                    statusDiv.innerHTML = `
-                        <p style="font-weight: 500; color: #DC3545;">Error Loading Data</p>
-                        <p style="margin-top: 10px;">${error.message}</p>
-                        <div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: 8px; margin-top: 15px; font-size: 0.9rem;">
-                            <strong>Tips:</strong><br>
-                            1. Upload file data.json ke hosting yang sama dengan index.html<br>
-                            2. Pastikan format JSON valid (tanpa "const", tanpa titik koma terakhir)<br>
-                            3. Jika Anda menggunakan Live Server, pastikan CORS diizinkan<br>
+                    console.error('Error fetching data:', error);
+                    
+                    let errorMessage = "Gagal memuat katalog.";
+                    if (error.message.includes("data.js")) {
+                        errorMessage = "File 'data.js' tidak ditemukan atau belum diupload.<br><br>" +
+                                       "Pastikan Anda sudah menyimpan file sebagai <b>data.js</b> dan sudah meng-UPLOAD ke GitHub Pages.";
+                    } else if (error.message.includes("Unexpected token")) {
+                         errorMessage = "Format JSON salah. Pastikan isi data.js adalah [ {...}, {...} ] tanpa kata 'const'.";
+                    }
+
+                    showStatus(errorMessage);
+                });
+
+            function renderGallery(data) {
+                const grid = document.getElementById('portfolio-grid');
+                const statusDiv = document.getElementById('status-message');
+                
+                // Reset Error Message jika berhasil load data baru
+                if(statusDiv) statusDiv.style.display = 'none';
+
+                // Hapus semua kartu lama
+                grid.innerHTML = '';
+
+                // 1. Sortir berdasarkan ID (angka) agar rapi
+                const sortedData = data.sort((a, b) => {
+                    const numA = parseInt(a.id.replace(/\D/g, ''));
+                    const numB = parseInt(b.id.replace(/\D/g, ''));
+                    
+                    // Jika parsing gagal (misal format ID beda), return 0
+                    if (isNaN(numA)) return 1;
+                    if (isNaN(numB)) return -1;
+                    
+                    return numA - numB;
+                });
+
+                // Filter duplikat berdasarkan ID dan Thumbnail
+                const uniqueData = Array.from(
+                    new Map(sortedData.map(item => [`${item.id}-${item.thumbnail}`, item])).values()
+                );
+
+                // Tampilkan jumlah data yang berhasil dimuat (Hanya untuk Debugging)
+                console.log(`Total items dimuat dari GitHub Pages: ${uniqueData.length}`);
+
+                // Render setiap item
+                uniqueData.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    // Tentukan badge class yang sesuai dengan nama badge di JSON
+                    let badgeClass = '';
+                    if (item.badge) {
+                        badgeClass = `badge ${normalizeBadgeClass(item.badge)}`;
+                    }
+
+                    card.innerHTML = `
+                        <span class="${badgeClass}">${item.badge || ''}</span>
+                        <div class="thumbnail-container">
+                            <img src="${item.thumbnail}" alt="${item.title}" class="thumbnail" onerror="this.src='https://placehold.co/600x400/f5f5f7/808080?text=No+Image'">
+                        </div>
+                        <h2 class="title">${item.title}</h2>
+                        <p class="description">${item.description}</p>
+                        <div class="card-footer">
+                            <span>ID: ${item.id}</span>
+                            <span class="price">${item.price}</span>
                         </div>
                     `;
-                });
-        });
 
-        function renderGallery(data) {
-            const grid = document.getElementById('portfolio-grid');
-            
-            // Reset tampilan untuk mencegah duplikasi jika ada refresh page
-            if (grid.children.length > 0 && typeof data === 'object' && data.length > 3) {
-                grid.innerHTML = '';
+                    // Jika folder berisi URL valid, klik akan membuka link
+                    if(item.folder && item.folder.startsWith('http')) {
+                        card.addEventListener('click', () => {
+                            window.location.href = item.folder;
+                        });
+                    }
+
+                    grid.appendChild(card);
+                });
             }
 
-            // Tampilkan pesan jika tidak ada data
-            if (!data || data.length === 0) {
+            function normalizeBadgeClass(badge) {
+                const badgeLower = badge.toLowerCase();
+                
+                if (badge.includes('Popular') || badge === '') return 'popular';
+                if (badge.includes('New')) return 'new';
+                if (badge.includes('Best Seller') || badge.includes('Best Choose')) return 'best-seller';
+                if (badge.includes('Heritage')) return 'heritage';
+                if (badge.includes('Modern Choice')) return 'modern-choice';
+                if (badge.includes('Jawa')) return 'jawa';
+                if (badge.includes('Elegance')) return 'elegance';
+                if (badge.includes('Premium')) return 'premium';
+                if (badge.includes('Fresh')) return 'fresh';
+                if (badge.includes('Classic')) return 'classic';
+                
+                // Fallback untuk badge lain yang tidak terdaftar
+                return `badge ${badgeLower.split(' ').join('-')}`;
+            }
+
+            function showStatus(msg) {
                 const statusDiv = document.getElementById('status-message');
                 statusDiv.style.display = 'block';
-                statusDiv.innerText = "Tidak ada data yang ditemukan. Silakan cek file data.json.";
-                return;
+                statusDiv.innerHTML = `<p style="color:#333; font-weight:bold;">${msg}</p>`;
             }
-
-            grid.innerHTML = '';
-
-            // Sortir berdasarkan ID agar lebih rapi
-            const sortedData = data.sort((a, b) => {
-                const numA = parseInt(a.id.replace(/\D/g, ''));
-                const numB = parseInt(b.id.replace(/\D/g, ''));
-                return numA - numB;
-            });
-
-            // Hapus duplikat berdasarkan ID atau thumbnail jika ada
-            const uniqueData = Array.from(new Map(sortedData.map(item => [item.thumbnail, item])).values());
-
-            uniqueData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                
-                // Tentukan badge class
-                let badgeClass = '';
-                if (item.badge) {
-                    badgeClass = `badge ${normalizeBadge(item.badge)}`;
-                }
-
-                card.innerHTML = `
-                    <span class="${badgeClass}">${item.badge || ''}</span>
-                    <div class="thumbnail-container">
-                        <img src="${item.thumbnail}" alt="${item.title}" class="thumbnail" onerror="this.src='https://placehold.co/600x400/f5f5f7/808080?text=No+Image'">
-                    </div>
-                    <h2 class="title">${item.title}</h2>
-                    <p class="description">${item.description}</p>
-                    <div class="card-footer">
-                        <span>ID: ${item.id}</span>
-                        <span class="price">${item.price}</span>
-                    </div>
-                `;
-
-                // Jika folder berisi link, arahkan click ke folder
-                if(item.folder && item.folder !== "#") {
-                    card.addEventListener('click', () => {
-                        window.location.href = item.folder;
-                    });
-                }
-
-                grid.appendChild(card);
-            });
-        }
-
-        function normalizeBadge(badge) {
-            // Normalisasi nama badge ke class CSS yang sesuai
-            const badgeClass = badge.toLowerCase().split(' ').join('-');
-            let result = '';
-            
-            // Mapping badge ke class CSS
-            if (badge.includes('Popular') || badge === '') return 'popular';
-            if (badge.includes('New')) return 'new';
-            if (badge.includes('Best Seller') || badge.includes('Best Choose')) return 'best-seller';
-            if (badge.includes('Heritage')) return 'heritage';
-            if (badge.includes('Modern Choice')) return 'modern-choice';
-            if (badge.includes('Jawa')) return 'jawa';
-            if (badge.includes('Elegance')) return 'elegance';
-            if (badge.includes('Premium')) return 'premium';
-            if (badge.includes('Fresh')) return 'fresh';
-            if (badge.includes('Classic')) return 'classic';
-            
-            return badgeClass; // Fallback jika badge tidak cocok
-        }
+        });
     </script>
 </body>
 </html>
