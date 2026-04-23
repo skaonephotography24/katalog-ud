@@ -9,35 +9,48 @@
 
 <style>
 :root {
-    --bg-glass: rgba(255,255,255,0.7);
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-border: rgba(255,255,255,0.3);
     --text-primary:#1d1d1f;
     --text-secondary:#6e6e73;
     --wa-green:#25D366;
 }
 
+/* RESET */
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
     font-family:'Inter',sans-serif;
-    background:#f5f5f7;
+    min-height:100vh;
+    color:var(--text-primary);
+
+    /* BACKGROUND ala macOS */
+    background:
+        radial-gradient(at 0% 0%, #e7ecff 0%, transparent 50%),
+        radial-gradient(at 100% 0%, #ffe7f0 0%, transparent 50%),
+        radial-gradient(at 50% 100%, #e7fff4 0%, transparent 50%),
+        #f5f5f7;
 }
 
 /* HEADER */
-.header-bar{
+.header{
     display:flex;
     align-items:center;
     gap:12px;
-    padding:20px;
+    padding:20px 30px;
+
+    backdrop-filter: blur(20px);
+    background: var(--glass-bg);
+    border-bottom:1px solid var(--glass-border);
 }
 
 .logo{
-    width:40px;
-    height:40px;
-    object-fit:contain;
+    width:42px;
+    height:42px;
 }
 
-.header-title{
-    font-size:1.5rem;
+.title{
+    font-size:1.6rem;
     font-weight:600;
 }
 
@@ -45,36 +58,39 @@ body{
 .container{
     max-width:1200px;
     margin:auto;
-    padding:10px 20px 40px;
+    padding:30px 20px;
 }
 
 .subtitle{
     text-align:center;
     color:var(--text-secondary);
-    margin-bottom:30px;
+    margin-bottom:35px;
 }
 
 /* GRID */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-    gap:25px;
+    gap:28px;
 }
 
-/* CARD */
+/* CARD GLASS */
 .card{
-    background:var(--bg-glass);
-    backdrop-filter:blur(20px);
-    border-radius:16px;
-    padding:20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    border:1px solid var(--glass-border);
+    border-radius:18px;
+    padding:18px;
+
     transition:0.3s;
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:12px;
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 /* IMAGE */
@@ -82,21 +98,7 @@ body{
     width:100%;
     aspect-ratio:4/3;
     object-fit:cover;
-    border-radius:10px;
-}
-
-/* TEXT */
-.title{font-weight:600;}
-.description{
-    font-size:0.9rem;
-    color:var(--text-secondary);
-}
-
-/* FOOTER */
-.footer{
-    display:flex;
-    justify-content:space-between;
-    font-size:0.9rem;
+    border-radius:12px;
 }
 
 /* BADGE */
@@ -105,6 +107,7 @@ body{
     padding:4px 10px;
     border-radius:20px;
     font-size:0.7rem;
+    font-weight:500;
 }
 
 .popular{background:#e7f1ff;color:#007aff;}
@@ -114,23 +117,47 @@ body{
 .jawa{background:#ffeaea;color:#dc3545;}
 .classic{background:#f1f1f1;color:#666;}
 
-/* BOOKING BUTTON */
+/* TEXT */
+.card-title{
+    font-weight:600;
+    font-size:1.05rem;
+}
+
+.description{
+    font-size:0.9rem;
+    color:var(--text-secondary);
+    line-height:1.4;
+}
+
+/* FOOTER */
+.footer{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.85rem;
+}
+
+/* BUTTON WA */
 .booking-btn{
-    margin-top:10px;
-    padding:10px;
+    margin-top:8px;
+    padding:11px;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
+
     background:var(--wa-green);
     color:white;
     font-weight:500;
+    letter-spacing:0.2px;
+
     cursor:pointer;
-    transition:0.2s;
+    transition:all 0.2s ease;
 }
 
 .booking-btn:hover{
-    opacity:0.9;
+    transform:scale(1.02);
+    box-shadow:0 6px 18px rgba(37,211,102,0.35);
 }
 
+/* STATUS */
 #status{
     text-align:center;
     margin-top:20px;
@@ -142,13 +169,13 @@ body{
 <body>
 
 <!-- HEADER -->
-<div class="header-bar">
+<div class="header">
     <img src="logo.png" class="logo">
-    <div class="header-title">Katalog Undangan Digital</div>
+    <div class="title">Katalog Undangan Digital</div>
 </div>
 
 <div class="container">
-<p class="subtitle">Pilih desain terbaik untuk momen spesial Anda</p>
+<p class="subtitle">Desain eksklusif dengan tampilan modern & elegan</p>
 
 <div id="status"></div>
 <div id="grid" class="grid"></div>
@@ -156,23 +183,19 @@ body{
 
 <script>
 const DATA_FILE = "data.json";
-
-/* GANTI NOMOR WA DISINI */
 const WHATSAPP_NUMBER = "6285712130175";
 
+/* LOAD DATA */
 fetch(DATA_FILE)
-.then(res => {
-    if(!res.ok) throw new Error("Gagal load data");
+.then(res=>{
+    if(!res.ok) throw new Error();
     return res.json();
 })
-.then(data => render(data))
-.catch(err => {
-    console.error(err);
-    showStatus("Gagal load data. Pastikan data.json ada.");
-});
+.then(data=>render(data))
+.catch(()=>showStatus("Gagal memuat data"));
 
 function render(data){
-    const grid = document.getElementById("grid");
+    const grid=document.getElementById("grid");
 
     data.sort((a,b)=>{
         const na=parseInt(a.id.replace(/\D/g,''));
@@ -181,13 +204,13 @@ function render(data){
     });
 
     data.forEach(item=>{
-        const div=document.createElement("div");
-        div.className="card";
+        const card=document.createElement("div");
+        card.className="card";
 
-        div.innerHTML=`
+        card.innerHTML=`
             <span class="badge ${badgeClass(item.badge)}">${item.badge||""}</span>
-            <img class="thumbnail" src="${item.thumbnail}" onerror="this.src='https://placehold.co/600x400'">
-            <div class="title">${item.title}</div>
+            <img class="thumbnail" src="${item.thumbnail}">
+            <div class="card-title">${item.title}</div>
             <div class="description">${item.description}</div>
             <div class="footer">
                 <span>${item.id}</span>
@@ -196,23 +219,23 @@ function render(data){
             <button class="booking-btn">Booking Now</button>
         `;
 
-        /* klik card = buka preview */
-        div.querySelector(".thumbnail").onclick = () => {
-            window.location.href = item.folder;
+        /* klik gambar = preview */
+        card.querySelector(".thumbnail").onclick=()=>{
+            window.location.href=item.folder;
         };
 
-        /* tombol booking WA */
-        div.querySelector(".booking-btn").onclick = (e) => {
+        /* booking WA */
+        card.querySelector(".booking-btn").onclick=(e)=>{
             e.stopPropagation();
 
-            const text = encodeURIComponent(
-                `Halo, saya tertarik dengan:\n\n${item.title} (${item.id})\nHarga: ${item.price}`
+            const text=encodeURIComponent(
+                `Halo, saya ingin booking:\n\n${item.title}\nID: ${item.id}\nHarga: ${item.price}`
             );
 
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank");
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`,"_blank");
         };
 
-        grid.appendChild(div);
+        grid.appendChild(card);
     });
 }
 
@@ -232,7 +255,7 @@ function badgeClass(b){
 function showStatus(msg){
     const el=document.getElementById("status");
     el.style.display="block";
-    el.innerHTML=msg;
+    el.innerText=msg;
 }
 </script>
 
