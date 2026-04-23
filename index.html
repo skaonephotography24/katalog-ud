@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katalog Portfolio</title>
+<title>Katalog Undangan Digital</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
     --bg-glass: rgba(255,255,255,0.7);
-    --border-glass: rgba(255,255,255,0.4);
     --text-primary:#1d1d1f;
     --text-secondary:#6e6e73;
+    --wa-green:#25D366;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -20,38 +20,64 @@
 body{
     font-family:'Inter',sans-serif;
     background:#f5f5f7;
-    min-height:100vh;
 }
 
+/* HEADER */
+.header-bar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:20px;
+}
+
+.logo{
+    width:40px;
+    height:40px;
+    object-fit:contain;
+}
+
+.header-title{
+    font-size:1.5rem;
+    font-weight:600;
+}
+
+/* CONTAINER */
 .container{
     max-width:1200px;
     margin:auto;
-    padding:40px 20px;
+    padding:10px 20px 40px;
 }
 
-header{text-align:center;margin-bottom:50px;}
-h1{font-size:2.8rem;font-weight:600;}
-.subtitle{color:#6e6e73;}
+.subtitle{
+    text-align:center;
+    color:var(--text-secondary);
+    margin-bottom:30px;
+}
 
+/* GRID */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
     gap:25px;
 }
 
+/* CARD */
 .card{
     background:var(--bg-glass);
     backdrop-filter:blur(20px);
     border-radius:16px;
     padding:20px;
-    cursor:pointer;
     transition:0.3s;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
 }
 
 .card:hover{
     transform:translateY(-5px);
 }
 
+/* IMAGE */
 .thumbnail{
     width:100%;
     aspect-ratio:4/3;
@@ -59,25 +85,26 @@ h1{font-size:2.8rem;font-weight:600;}
     border-radius:10px;
 }
 
-.title{font-weight:600;margin-top:10px;}
+/* TEXT */
+.title{font-weight:600;}
 .description{
     font-size:0.9rem;
     color:var(--text-secondary);
 }
 
+/* FOOTER */
 .footer{
     display:flex;
     justify-content:space-between;
-    margin-top:10px;
     font-size:0.9rem;
 }
 
+/* BADGE */
 .badge{
     display:inline-block;
     padding:4px 10px;
     border-radius:20px;
     font-size:0.7rem;
-    margin-bottom:8px;
 }
 
 .popular{background:#e7f1ff;color:#007aff;}
@@ -86,6 +113,23 @@ h1{font-size:2.8rem;font-weight:600;}
 .premium{background:#e7f1ff;color:#007aff;}
 .jawa{background:#ffeaea;color:#dc3545;}
 .classic{background:#f1f1f1;color:#666;}
+
+/* BOOKING BUTTON */
+.booking-btn{
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:var(--wa-green);
+    color:white;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.booking-btn:hover{
+    opacity:0.9;
+}
 
 #status{
     text-align:center;
@@ -97,11 +141,14 @@ h1{font-size:2.8rem;font-weight:600;}
 
 <body>
 
+<!-- HEADER -->
+<div class="header-bar">
+    <img src="logo.png" class="logo">
+    <div class="header-title">Katalog Undangan Digital</div>
+</div>
+
 <div class="container">
-<header>
-<h1>Koleksi Portfolio</h1>
-<p class="subtitle">Desain eksklusif untuk momen spesial</p>
-</header>
+<p class="subtitle">Pilih desain terbaik untuk momen spesial Anda</p>
 
 <div id="status"></div>
 <div id="grid" class="grid"></div>
@@ -109,6 +156,9 @@ h1{font-size:2.8rem;font-weight:600;}
 
 <script>
 const DATA_FILE = "data.json";
+
+/* GANTI NOMOR WA DISINI */
+const WHATSAPP_NUMBER = "6281234567890";
 
 fetch(DATA_FILE)
 .then(res => {
@@ -143,11 +193,24 @@ function render(data){
                 <span>${item.id}</span>
                 <span>${item.price}</span>
             </div>
+            <button class="booking-btn">Booking Now</button>
         `;
 
-        if(item.folder){
-            div.onclick=()=>window.location.href=item.folder;
-        }
+        /* klik card = buka preview */
+        div.querySelector(".thumbnail").onclick = () => {
+            window.location.href = item.folder;
+        };
+
+        /* tombol booking WA */
+        div.querySelector(".booking-btn").onclick = (e) => {
+            e.stopPropagation();
+
+            const text = encodeURIComponent(
+                `Halo, saya tertarik dengan:\n\n${item.title} (${item.id})\nHarga: ${item.price}`
+            );
+
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, "_blank");
+        };
 
         grid.appendChild(div);
     });
