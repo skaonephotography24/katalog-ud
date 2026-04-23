@@ -1,330 +1,177 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Portfolio</title>
-    
-    <!-- Font Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Katalog Portfolio</title>
 
-    <style>
-        :root {
-            --bg-glass: rgba(255, 255, 255, 0.7);
-            --border-glass: rgba(255, 255, 255, 0.4);
-            --text-primary: #1d1d1f;
-            --text-secondary: #6e6e73;
-            --accent-color: #007AFF;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+:root {
+    --bg-glass: rgba(255,255,255,0.7);
+    --border-glass: rgba(255,255,255,0.4);
+    --text-primary:#1d1d1f;
+    --text-secondary:#6e6e73;
+}
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            color: var(--text-primary);
-            background-color: #f5f5f7;
-            /* Wallpaper style ala MacOS */
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,91%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,91%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(213,47%,91%,1) 0, transparent 50%);
-            background-size: cover;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
+body{
+    font-family:'Inter',sans-serif;
+    background:#f5f5f7;
+    min-height:100vh;
+}
 
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 0.8s ease-out;
-        }
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:40px 20px;
+}
 
-        h1 {
-            font-weight: 600;
-            font-size: 3rem;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #1d1d1f 0%, #434344 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+header{text-align:center;margin-bottom:50px;}
+h1{font-size:2.8rem;font-weight:600;}
+.subtitle{color:#6e6e73;}
 
-        p.subtitle {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:25px;
+}
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-        }
+.card{
+    background:var(--bg-glass);
+    backdrop-filter:blur(20px);
+    border-radius:16px;
+    padding:20px;
+    cursor:pointer;
+    transition:0.3s;
+}
 
-        .card {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 18px;
-            border: 1px solid var(--border-glass);
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
+.card:hover{
+    transform:translateY(-5px);
+}
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.85);
-        }
+.thumbnail{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    border-radius:10px;
+}
 
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+.title{font-weight:600;margin-top:10px;}
+.description{
+    font-size:0.9rem;
+    color:var(--text-secondary);
+}
 
-        /* Badge Styling */
-        .badge.popular { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
-        .badge.new { background: rgba(46, 204, 113, 0.1); color: #28a745; }
-        .badge.best-seller { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
-        .badge.heritage { background: rgba(0, 0, 0, 0.05); color: #1d1d1f; }
-        .badge.modern-choice { background: rgba(46, 204, 113, 0.1); color: #28a745; }
-        .badge.jawa { background: rgba(220, 53, 69, 0.1); color: #DC3545; }
-        .badge.elegance { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
-        .badge.premium { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
-        .badge.fresh { background: rgba(46, 204, 113, 0.1); color: #28a745; }
-        .badge.best-choose { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
-        .badge.classic { background: rgba(127, 140, 141, 0.1); color: #869094; }
+.footer{
+    display:flex;
+    justify-content:space-between;
+    margin-top:10px;
+    font-size:0.9rem;
+}
 
-        .thumbnail-container {
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: -20px;
-            padding-bottom: 15px;
-        }
+.badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:0.7rem;
+    margin-bottom:8px;
+}
 
-        .thumbnail {
-            width: 100%;
-            aspect-ratio: 4/3;
-            object-fit: cover;
-            border-radius: 12px;
-            transition: transform 0.5s ease;
-        }
+.popular{background:#e7f1ff;color:#007aff;}
+.new{background:#e6f7ec;color:#28a745;}
+.best-seller{background:#e7f1ff;color:#007aff;}
+.premium{background:#e7f1ff;color:#007aff;}
+.jawa{background:#ffeaea;color:#dc3545;}
+.classic{background:#f1f1f1;color:#666;}
 
-        .card:hover .thumbnail {
-            transform: scale(1.03);
-        }
-
-        .title {
-            font-size: 1.4rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .description {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border-glass);
-            padding-top: 16px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .price {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        #status-message {
-            text-align: center;
-            padding: 20px;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            display: none; /* Default hidden */
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+#status{
+    text-align:center;
+    margin-top:20px;
+    display:none;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="container">
-        <header>
-            <h1>Koleksi Portfolio</h1>
-            <p class="subtitle">Desain eksklusif untuk momen spesial Anda</p>
-        </header>
+<div class="container">
+<header>
+<h1>Koleksi Portfolio</h1>
+<p class="subtitle">Desain eksklusif untuk momen spesial</p>
+</header>
 
-        <!-- Pesan Error/Loading (Default Hidden) -->
-        <div id="status-message"></div>
+<div id="status"></div>
+<div id="grid" class="grid"></div>
+</div>
 
-        <!-- Grid Container -->
-        <div id="portfolio-grid" class="grid">
-            <!-- Item akan digenerate oleh Javascript disini -->
-        </div>
-    </div>
+<script>
+const DATA_FILE = "data.json";
 
-    <script>
-        // ⚠️ PENTING: Gunakan file data.js di folder yang SAMA
-        const DATA_FILE = 'data.js'; 
+fetch(DATA_FILE)
+.then(res => {
+    if(!res.ok) throw new Error("Gagal load data");
+    return res.json();
+})
+.then(data => render(data))
+.catch(err => {
+    console.error(err);
+    showStatus("Gagal load data. Pastikan data.json ada.");
+});
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Fungsi untuk mengecek koneksi dan memuat data
-            fetch(DATA_FILE)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json(); // Parse JSON langsung
-                })
-                .then(data => {
-                    // Validasi data bukan null dan adalah array
-                    if (!Array.isArray(data)) {
-                        showStatus("Format data tidak valid. Pastikan data.js berisi Array [ {...}, {...} ].");
-                        return;
-                    }
-                    
-                    // Render Grid dengan data yang didapat
-                    renderGallery(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    
-                    let errorMessage = "Gagal memuat katalog.";
-                    if (error.message.includes("data.js")) {
-                        errorMessage = "File 'data.js' tidak ditemukan atau belum diupload.<br><br>" +
-                                       "Pastikan Anda sudah menyimpan file sebagai <b>data.js</b> dan sudah meng-UPLOAD ke GitHub Pages.";
-                    } else if (error.message.includes("Unexpected token")) {
-                         errorMessage = "Format JSON salah. Pastikan isi data.js adalah [ {...}, {...} ] tanpa kata 'const'.";
-                    }
+function render(data){
+    const grid = document.getElementById("grid");
 
-                    showStatus(errorMessage);
-                });
+    data.sort((a,b)=>{
+        const na=parseInt(a.id.replace(/\D/g,''));
+        const nb=parseInt(b.id.replace(/\D/g,''));
+        return na-nb;
+    });
 
-            function renderGallery(data) {
-                const grid = document.getElementById('portfolio-grid');
-                const statusDiv = document.getElementById('status-message');
-                
-                // Reset Error Message jika berhasil load data baru
-                if(statusDiv) statusDiv.style.display = 'none';
+    data.forEach(item=>{
+        const div=document.createElement("div");
+        div.className="card";
 
-                // Hapus semua kartu lama
-                grid.innerHTML = '';
+        div.innerHTML=`
+            <span class="badge ${badgeClass(item.badge)}">${item.badge||""}</span>
+            <img class="thumbnail" src="${item.thumbnail}" onerror="this.src='https://placehold.co/600x400'">
+            <div class="title">${item.title}</div>
+            <div class="description">${item.description}</div>
+            <div class="footer">
+                <span>${item.id}</span>
+                <span>${item.price}</span>
+            </div>
+        `;
 
-                // 1. Sortir berdasarkan ID (angka) agar rapi
-                const sortedData = data.sort((a, b) => {
-                    const numA = parseInt(a.id.replace(/\D/g, ''));
-                    const numB = parseInt(b.id.replace(/\D/g, ''));
-                    
-                    // Jika parsing gagal (misal format ID beda), return 0
-                    if (isNaN(numA)) return 1;
-                    if (isNaN(numB)) return -1;
-                    
-                    return numA - numB;
-                });
+        if(item.folder){
+            div.onclick=()=>window.location.href=item.folder;
+        }
 
-                // Filter duplikat berdasarkan ID dan Thumbnail
-                const uniqueData = Array.from(
-                    new Map(sortedData.map(item => [`${item.id}-${item.thumbnail}`, item])).values()
-                );
+        grid.appendChild(div);
+    });
+}
 
-                // Tampilkan jumlah data yang berhasil dimuat (Hanya untuk Debugging)
-                console.log(`Total items dimuat dari GitHub Pages: ${uniqueData.length}`);
+function badgeClass(b){
+    if(!b) return "popular";
+    b=b.toLowerCase();
 
-                // Render setiap item
-                uniqueData.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    
-                    // Tentukan badge class yang sesuai dengan nama badge di JSON
-                    let badgeClass = '';
-                    if (item.badge) {
-                        badgeClass = `badge ${normalizeBadgeClass(item.badge)}`;
-                    }
+    if(b.includes("new")) return "new";
+    if(b.includes("best")) return "best-seller";
+    if(b.includes("premium")) return "premium";
+    if(b.includes("jawa")) return "jawa";
+    if(b.includes("classic")) return "classic";
 
-                    card.innerHTML = `
-                        <span class="${badgeClass}">${item.badge || ''}</span>
-                        <div class="thumbnail-container">
-                            <img src="${item.thumbnail}" alt="${item.title}" class="thumbnail" onerror="this.src='https://placehold.co/600x400/f5f5f7/808080?text=No+Image'">
-                        </div>
-                        <h2 class="title">${item.title}</h2>
-                        <p class="description">${item.description}</p>
-                        <div class="card-footer">
-                            <span>ID: ${item.id}</span>
-                            <span class="price">${item.price}</span>
-                        </div>
-                    `;
+    return "popular";
+}
 
-                    // Jika folder berisi URL valid, klik akan membuka link
-                    if(item.folder && item.folder.startsWith('http')) {
-                        card.addEventListener('click', () => {
-                            window.location.href = item.folder;
-                        });
-                    }
+function showStatus(msg){
+    const el=document.getElementById("status");
+    el.style.display="block";
+    el.innerHTML=msg;
+}
+</script>
 
-                    grid.appendChild(card);
-                });
-            }
-
-            function normalizeBadgeClass(badge) {
-                const badgeLower = badge.toLowerCase();
-                
-                if (badge.includes('Popular') || badge === '') return 'popular';
-                if (badge.includes('New')) return 'new';
-                if (badge.includes('Best Seller') || badge.includes('Best Choose')) return 'best-seller';
-                if (badge.includes('Heritage')) return 'heritage';
-                if (badge.includes('Modern Choice')) return 'modern-choice';
-                if (badge.includes('Jawa')) return 'jawa';
-                if (badge.includes('Elegance')) return 'elegance';
-                if (badge.includes('Premium')) return 'premium';
-                if (badge.includes('Fresh')) return 'fresh';
-                if (badge.includes('Classic')) return 'classic';
-                
-                // Fallback untuk badge lain yang tidak terdaftar
-                return `badge ${badgeLower.split(' ').join('-')}`;
-            }
-
-            function showStatus(msg) {
-                const statusDiv = document.getElementById('status-message');
-                statusDiv.style.display = 'block';
-                statusDiv.innerHTML = `<p style="color:#333; font-weight:bold;">${msg}</p>`;
-            }
-        });
-    </script>
 </body>
 </html>
