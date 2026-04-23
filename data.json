@@ -1,8 +1,4 @@
-// File: data.js
-// Lokasi: Sama persis dengan index.html
-// Upload kedua file ini ke GitHub Pages di branch yang sama
-
-export default [
+[
   {
     "id": "WD001",
     "title": "Bluesh Romance",
@@ -19,15 +15,6 @@ export default [
     "thumbnail": "https://tokoundangan.pages.dev/classic/classic.jpg",
     "description": "Desain klasik bernuansa putih dan emas dengan tampilan bersih, elegan, dan mewah tanpa kesan berlebihan.",
     "price": "Rp 45k",
-    "badge": "Best Seller"
-  },
-  {
-    "id": "WD042",
-    "title": "Luxury Art 01",
-    "folder": "https://tokoundangan.pages.dev/luxury_art_01",
-    "thumbnail": "https://tokoundangan.pages.dev/luxury_art_01/luxury_art_01.jpg",
-    "description": "Perpaduan warna hijau luxury, emas, dan abu-abu menciptakan kesan eksklusif. Setiap detail mencerminkan keindahan cinta yang artistik dan berkelas.",
-    "price": "Rp 50k",
     "badge": "Best Seller"
   },
   {
@@ -85,29 +72,11 @@ export default [
     "badge": "Fresh"
   },
   {
-    "id": "WD018",
-    "title": "Sakura Sarenity",
-    "folder": "https://tokoundangan.pages.dev/sakura_sarenity",
-    "thumbnail": "https://tokoundangan.pages.dev/sakura_sarenity/sakura.jpg",
-    "description": "Perpaduan lembut nuansa pink pastel dan putih bersih yang terinspirasi dari kelopak bunga sakura, menciptakan suasana pernikahan yang tenang, romantis, dan penuh kedamaian. Dekorasi didominasi oleh rangkaian bunga minimalis, pencahayaan alami yang hangat, dan sentuhan elegan yang sederhana namun memukau",
-    "price": "Rp 45k",
-    "badge": "New"
-  },
-  {
     "id": "WD009",
     "title": "Sekar Kinanthi",
     "folder": "https://tokoundangan.pages.dev/sekar_kinanti",
     "thumbnail": "https://tokoundangan.pages.dev/sekar_kinanti/sekar_kinanti.jpg",
     "description": "Tema pawiwahan adat Jawa dengan sentuhan kraton, filosofi luhur, dan nuansa budaya yang kental dan elegan.",
-    "price": "Rp 50k",
-    "badge": "Jawa"
-  },
-  {
-    "id": "WD016",
-    "title": "Pawiwahan Tradisional",
-    "folder": "https://tokoundangan.pages.dev/pawiwahan_tradisional",
-    "thumbnail": "https://tokoundangan.pages.dev/pawiwahan_tradisional/pawiwahan.jpg",
-    "description": "Tradisional Raras — Undha-undhangan pawiwahan kanthi nuansa adat Jawa Timur ingkang tradhisional. Nggabungake basa Jawa, ornament ꧁꧂, warna emas-coklat, lan teknologi modern kangge pengalaman ingkang elegan lan penuh makna. Mugi dados berkah kangge kahanan sakalian.",
     "price": "Rp 50k",
     "badge": "Jawa"
   },
@@ -148,51 +117,6 @@ export default [
     "badge": "Premium"
   },
   {
-    "id": "WD017",
-    "title": "Premium 06",
-    "folder": "https://tokoundangan.pages.dev/premium_06",
-    "thumbnail": "https://tokoundangan.pages.dev/premium_06/premium_06.jpg",
-    "description": "Versi premium dari tema vintage dengan detail lebih mewah dan tampilan yang lebih eksklusif.",
-    "price": "Rp 55k",
-    "badge": "Premium"
-  },
-  {
-    "id": "WD0170",
-    "title": "Premium 07",
-    "folder": "https://tokoundangan.pages.dev/premium_07",
-    "thumbnail": "https://tokoundangan.pages.dev/premium_07/premium_07.jpg",
-    "description": "Versi premium dari tema vintage dengan detail lebih mewah dan tampilan yang lebih eksklusif.",
-    "price": "Rp 55k",
-    "badge": "Premium"
-  },
-  {
-    "id": "WD087",
-    "title": "Premium Java",
-    "folder": "https://tokoundangan.pages.dev/premium_java",
-    "thumbnail": "https://tokoundangan.pages.dev/premium_java/premium_java.jpg",
-    "description": "Versi premium dari tema vintage dengan detail lebih mewah dengan bahasa Jawa timur an",
-    "price": "Rp 55k",
-    "badge": "Premium"
-  },
-  {
-    "id": "WD077",
-    "title": "Premium White",
-    "folder": "https://tokoundangan.pages.dev/premium_white",
-    "thumbnail": "https://tokoundangan.pages.dev/premium_white/premium_white.jpg",
-    "description": "Versi premium dari tema vintage dengan detail lebih mewah dan tampilan yang lebih eksklusif.",
-    "price": "Rp 55k",
-    "badge": "Premium"
-  },
-  {
-    "id": "WD018-NOIMG",
-    "title": "Premium 04 No Image",
-    "folder": "https://tokoundangan.pages.dev/monogram_no_image",
-    "thumbnail": "https://tokoundangan.pages.dev/monogram_no_image/mono.jpg",
-    "description": "Versi premium dari tema vintage tanpa foto.",
-    "price": "Rp 45k",
-    "badge": "Premium"
-  },
-  {
     "id": "WD014",
     "title": "White Gold Arch",
     "folder": "https://tokoundangan.pages.dev/clean_white",
@@ -206,8 +130,35 @@ export default [
     "title": "Clasic Sekar",
     "folder": "https://tokoundangan.pages.dev/sekar",
     "thumbnail": "https://tokoundangan.pages.dev/sekar/sekar.jpg",
-    "description": "Sekar = bunga/kembang dalam Bahasa Jawa. Simbol keindahan, kemekaran, dan momen spesial yang layak dirayakan.",
+    "description": "Sekar berarti bunga dalam bahasa Jawa, melambangkan keindahan dan momen spesial.",
     "price": "Rp 52k",
     "badge": "Best Choose"
+  },
+  {
+    "id": "WD016",
+    "title": "Pawiwahan Tradisional",
+    "folder": "https://tokoundangan.pages.dev/pawiwahan_tradisional",
+    "thumbnail": "https://tokoundangan.pages.dev/pawiwahan_tradisional/pawiwahan.jpg",
+    "description": "Undangan pawiwahan adat Jawa Timur dengan nuansa tradisional, ornamen khas, dan sentuhan modern.",
+    "price": "Rp 50k",
+    "badge": "Jawa"
+  },
+  {
+    "id": "WD017",
+    "title": "Premium 06",
+    "folder": "https://tokoundangan.pages.dev/premium_06",
+    "thumbnail": "https://tokoundangan.pages.dev/premium_06/premium_06.jpg",
+    "description": "Versi premium dari tema vintage dengan tampilan lebih eksklusif.",
+    "price": "Rp 55k",
+    "badge": "Premium"
+  },
+  {
+    "id": "WD018",
+    "title": "Sakura Serenity",
+    "folder": "https://tokoundangan.pages.dev/sakura_sarenity",
+    "thumbnail": "https://tokoundangan.pages.dev/sakura_sarenity/sakura.jpg",
+    "description": "Nuansa sakura pink pastel yang lembut, romantis, dan penuh kedamaian.",
+    "price": "Rp 45k",
+    "badge": "New"
   }
-];
+]
