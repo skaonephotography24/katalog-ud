@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Portfolio</title>
+    
+    <!-- Menggunakan Font Google (Inter) yang mirip dengan San Francisco -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-glass: rgba(255, 255, 255, 0.7);
+            --border-glass: rgba(255, 255, 255, 0.4);
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --accent-color: #007AFF; /* Apple Blue */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-primary);
+            background-color: #f5f5f7; /* Apple Light Grey */
+            /* Wallpaper abstrak minimalis ala MacOS Big Sur/Monterey */
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,91%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,91%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(213,47%,91%,1) 0, transparent 50%);
+            background-size: cover;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Container Utama */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header / Hero Section */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 3rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1d1d1f 0%, #434344 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Kartu Item (Glassmorphism) */
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 18px;
+            border: 1px solid var(--border-glass);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge.popular { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
+        .badge.new { background: rgba(46, 204, 113, 0.1); color: #28a745; }
+
+        /* Gambar Thumbnail */
+        .thumbnail-container {
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: -20px; /* Efek visual sedikit overlap ke atas */
+            padding-bottom: 15px;
+        }
+
+        .thumbnail {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .thumbnail {
+            transform: scale(1.03);
+        }
+
+        /* Teks */
+        .title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Footer Card Info */
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-glass);
+            padding-top: 16px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .price {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Loading & Error State */
+        #status-message {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Koleksi Portfolio</h1>
+            <p class="subtitle">Desain eksklusif untuk momen spesial Anda</p>
+        </header>
+
+        <!-- Area Pesan (Loading/Error) -->
+        <div id="status-message"></div>
+
+        <!-- Grid Container -->
+        <div id="portfolio-grid" class="grid">
+            <!-- Item akan digenerate oleh Javascript disini -->
+        </div>
+    </div>
+
+    <script>
+        // KONFIGURASI: Lokasi file data.json Anda
+        const DATA_FILE = 'data.json'; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch(DATA_FILE)
+                .then(response => {
+                    if (!response.ok) throw new Error('Gagal mengambil data');
+                    return response.json();
+                })
+                .then(data => renderGallery(data))
+                .catch(error => {
+                    console.error('Error:', error);
+                    const statusDiv = document.getElementById('status-message');
+                    statusDiv.style.display = 'block';
+                    statusDiv.innerText = "Koneksi ke data.json terputus atau file belum dibuat. Pastikan 'data.json' berada di folder yang sama dengan ini.";
+                    // Data dummy untuk testing tampilan jika fetch gagal
+                    return loadDemoData(); 
+                });
+        });
+
+        function loadDemoData() {
+            // Array dummy sesuai format Anda, jadi kartu tidak kosong saat loading pertama kali
+            const demo = [
+                {
+                    id: "WD001",
+                    title: "Bluesh Romance",
+                    folder: "#", 
+                    thumbnail: "https://images.unsplash.com/photo-1579632652768-fd949c1742a2?q=80&w=1000&auto=format&fit=crop", // Placeholder gambar
+                    description: "Nuansa biru romantis dengan tampilan modern dan elegan. Cocok untuk pasangan yang menginginkan kesan lembut, tenang, dan stylish.",
+                    price: "Rp 25k",
+                    badge: "Popular"
+                },
+                {
+                    id: "WD002",
+                    title: "Golden Hour Wedding",
+                    folder: "#", 
+                    thumbnail: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop", // Placeholder gambar
+                    description: "Dominasi warna emas dan cream menciptakan suasana hangat, mewah, namun tetap intim.",
+                    price: "Rp 30k",
+                    badge: ""
+                },
+                {
+                    id: "WD003",
+                    title: "Minimalist Love",
+                    folder: "#", 
+                    thumbnail: "https://images.unsplash.com/photo-1520813797485-7f6d8149fcd3?q=80&w=1000&auto=format&fit=crop", // Placeholder gambar
+                    description: "Pilihan hitam putih dan beige. Elegan, klasik, dan tidak lekang oleh waktu.",
+                    price: "Rp 20k",
+                    badge: "New"
+                }
+            ];
+            return renderGallery(demo);
+        }
+
+        function renderGallery(data) {
+            const grid = document.getElementById('portfolio-grid');
+            
+            // Bersihkan grid jika ada sisa (opsional, tapi baik untuk reset)
+            // Jika data dummy dikembalikan dari error fetch, kita hanya menampilkan data demo.
+            if(grid.children.length > 0 && typeof data === 'string') return; 
+
+            grid.innerHTML = '';
+
+            data.forEach(item => {
+                const badgeClass = item.badge ? `badge ${item.badge.toLowerCase()}` : '';
+                
+                // Membuat elemen HTML kartu
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <span class="badge ${badgeClass}">${item.badge || ''}</span>
+                    <div class="thumbnail-container">
+                        <img src="${item.thumbnail}" alt="${item.title}" class="thumbnail" onerror="this.src='https://placehold.co/600x400/f5f5f7/808080?text=No+Image'">
+                    </div>
+                    <h2 class="title">${item.title}</h2>
+                    <p class="description">${item.description}</p>
+                    <div class="card-footer">
+                        <span>ID: ${item.id}</span>
+                        <span class="price">${item.price}</span>
+                    </div>
+                `;
+
+                // Jika folder berisi link, arahkan click ke folder (tombol panah)
+                if(item.folder && item.folder !== "#") {
+                    card.addEventListener('click', () => {
+                        window.location.href = item.folder;
+                    });
+                }
+
+                grid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
