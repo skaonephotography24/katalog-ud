@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Katalog Portfolio</title>
     
-    <!-- Menggunakan Font Google (Inter) yang mirip dengan San Francisco -->
+    <!-- Font Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
             --border-glass: rgba(255, 255, 255, 0.4);
             --text-primary: #1d1d1f;
             --text-secondary: #6e6e73;
-            --accent-color: #007AFF; /* Apple Blue */
+            --accent-color: #007AFF;
         }
 
         * {
@@ -28,8 +28,7 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-primary);
-            background-color: #f5f5f7; /* Apple Light Grey */
-            /* Wallpaper abstrak minimalis ala MacOS Big Sur/Monterey */
+            background-color: #f5f5f7;
             background-image: 
                 radial-gradient(at 0% 0%, hsla(253,16%,91%,1) 0, transparent 50%), 
                 radial-gradient(at 50% 0%, hsla(225,39%,91%,1) 0, transparent 50%), 
@@ -39,14 +38,12 @@
             line-height: 1.6;
         }
 
-        /* Container Utama */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
-        /* Header / Hero Section */
         header {
             text-align: center;
             margin-bottom: 60px;
@@ -68,14 +65,12 @@
             margin-top: 10px;
         }
 
-        /* Grid Layout */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
         }
 
-        /* Kartu Item (Glassmorphism) */
         .card {
             background: var(--bg-glass);
             backdrop-filter: blur(20px);
@@ -98,7 +93,6 @@
             background: rgba(255, 255, 255, 0.85);
         }
 
-        /* Badge */
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -111,12 +105,20 @@
 
         .badge.popular { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
         .badge.new { background: rgba(46, 204, 113, 0.1); color: #28a745; }
+        .badge.best-seller { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
+        .badge.heritage { background: rgba(0, 0, 0, 0.05); color: #1d1d1f; }
+        .badge.modern-choice { background: rgba(46, 204, 113, 0.1); color: #28a745; }
+        .badge.jawa { background: rgba(220, 53, 69, 0.1); color: #DC3545; }
+        .badge.elegance { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
+        .badge.premium { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
+        .badge.fresh { background: rgba(46, 204, 113, 0.1); color: #28a745; }
+        .badge.best-choose { background: rgba(0, 122, 255, 0.1); color: #007AFF; }
+        .badge.classic { background: rgba(127, 140, 141, 0.1); color: #869094; }
 
-        /* Gambar Thumbnail */
         .thumbnail-container {
             border-radius: 12px;
             overflow: hidden;
-            margin-top: -20px; /* Efek visual sedikit overlap ke atas */
+            margin-top: -20px;
             padding-bottom: 15px;
         }
 
@@ -132,7 +134,6 @@
             transform: scale(1.03);
         }
 
-        /* Teks */
         .title {
             font-size: 1.4rem;
             font-weight: 600;
@@ -150,7 +151,6 @@
             overflow: hidden;
         }
 
-        /* Footer Card Info */
         .card-footer {
             display: flex;
             justify-content: space-between;
@@ -166,7 +166,6 @@
             color: var(--text-primary);
         }
 
-        /* Loading & Error State */
         #status-message {
             text-align: center;
             padding: 50px;
@@ -179,7 +178,6 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
     </style>
 </head>
 <body>
@@ -190,87 +188,88 @@
             <p class="subtitle">Desain eksklusif untuk momen spesial Anda</p>
         </header>
 
-        <!-- Area Pesan (Loading/Error) -->
         <div id="status-message"></div>
-
-        <!-- Grid Container -->
-        <div id="portfolio-grid" class="grid">
-            <!-- Item akan digenerate oleh Javascript disini -->
-        </div>
+        <div id="portfolio-grid" class="grid"></div>
     </div>
 
     <script>
-        // KONFIGURASI: Lokasi file data.json Anda
-        const DATA_FILE = 'data.json'; 
+        // ⚠️ PENTING: GANTI DENGAN FILE YANG BERADA DI FOLDER SAMA ATAU URL
+        const DATA_FILE = 'data.json';
 
         document.addEventListener('DOMContentLoaded', () => {
             fetch(DATA_FILE)
                 .then(response => {
-                    if (!response.ok) throw new Error('Gagal mengambil data');
-                    return response.json();
+                    if (!response.ok) {
+                        throw new Error('Gagal mengambil data: Pastikan file data.json ada di folder yang sama atau upload ke hosting');
+                    }
+                    return response.text(); // Text dulu agar bisa dicek parsing JSON-nya
                 })
-                .then(data => renderGallery(data))
+                .then(text => {
+                    try {
+                        const jsonData = JSON.parse(text);
+                        renderGallery(jsonData);
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        throw new Error('Format file data.json tidak valid. Pastikan tidak ada tanda titik koma di akhir baris atau kata-kata seperti "const portfolioData"');
+                    }
+                })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Fetch error:', error);
                     const statusDiv = document.getElementById('status-message');
                     statusDiv.style.display = 'block';
-                    statusDiv.innerText = "Koneksi ke data.json terputus atau file belum dibuat. Pastikan 'data.json' berada di folder yang sama dengan ini.";
-                    // Data dummy untuk testing tampilan jika fetch gagal
-                    return loadDemoData(); 
+                    statusDiv.innerHTML = `
+                        <p style="font-weight: 500; color: #DC3545;">Error Loading Data</p>
+                        <p style="margin-top: 10px;">${error.message}</p>
+                        <div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: 8px; margin-top: 15px; font-size: 0.9rem;">
+                            <strong>Tips:</strong><br>
+                            1. Upload file data.json ke hosting yang sama dengan index.html<br>
+                            2. Pastikan format JSON valid (tanpa "const", tanpa titik koma terakhir)<br>
+                            3. Jika Anda menggunakan Live Server, pastikan CORS diizinkan<br>
+                        </div>
+                    `;
                 });
         });
-
-        function loadDemoData() {
-            // Array dummy sesuai format Anda, jadi kartu tidak kosong saat loading pertama kali
-            const demo = [
-                {
-                    id: "WD001",
-                    title: "Bluesh Romance",
-                    folder: "#", 
-                    thumbnail: "https://images.unsplash.com/photo-1579632652768-fd949c1742a2?q=80&w=1000&auto=format&fit=crop", // Placeholder gambar
-                    description: "Nuansa biru romantis dengan tampilan modern dan elegan. Cocok untuk pasangan yang menginginkan kesan lembut, tenang, dan stylish.",
-                    price: "Rp 25k",
-                    badge: "Popular"
-                },
-                {
-                    id: "WD002",
-                    title: "Golden Hour Wedding",
-                    folder: "#", 
-                    thumbnail: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000&auto=format&fit=crop", // Placeholder gambar
-                    description: "Dominasi warna emas dan cream menciptakan suasana hangat, mewah, namun tetap intim.",
-                    price: "Rp 30k",
-                    badge: ""
-                },
-                {
-                    id: "WD003",
-                    title: "Minimalist Love",
-                    folder: "#", 
-                    thumbnail: "https://images.unsplash.com/photo-1520813797485-7f6d8149fcd3?q=80&w=1000&auto=format&fit=crop", // Placeholder gambar
-                    description: "Pilihan hitam putih dan beige. Elegan, klasik, dan tidak lekang oleh waktu.",
-                    price: "Rp 20k",
-                    badge: "New"
-                }
-            ];
-            return renderGallery(demo);
-        }
 
         function renderGallery(data) {
             const grid = document.getElementById('portfolio-grid');
             
-            // Bersihkan grid jika ada sisa (opsional, tapi baik untuk reset)
-            // Jika data dummy dikembalikan dari error fetch, kita hanya menampilkan data demo.
-            if(grid.children.length > 0 && typeof data === 'string') return; 
+            // Reset tampilan untuk mencegah duplikasi jika ada refresh page
+            if (grid.children.length > 0 && typeof data === 'object' && data.length > 3) {
+                grid.innerHTML = '';
+            }
+
+            // Tampilkan pesan jika tidak ada data
+            if (!data || data.length === 0) {
+                const statusDiv = document.getElementById('status-message');
+                statusDiv.style.display = 'block';
+                statusDiv.innerText = "Tidak ada data yang ditemukan. Silakan cek file data.json.";
+                return;
+            }
 
             grid.innerHTML = '';
 
-            data.forEach(item => {
-                const badgeClass = item.badge ? `badge ${item.badge.toLowerCase()}` : '';
-                
-                // Membuat elemen HTML kartu
+            // Sortir berdasarkan ID agar lebih rapi
+            const sortedData = data.sort((a, b) => {
+                const numA = parseInt(a.id.replace(/\D/g, ''));
+                const numB = parseInt(b.id.replace(/\D/g, ''));
+                return numA - numB;
+            });
+
+            // Hapus duplikat berdasarkan ID atau thumbnail jika ada
+            const uniqueData = Array.from(new Map(sortedData.map(item => [item.thumbnail, item])).values());
+
+            uniqueData.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                
+                // Tentukan badge class
+                let badgeClass = '';
+                if (item.badge) {
+                    badgeClass = `badge ${normalizeBadge(item.badge)}`;
+                }
+
                 card.innerHTML = `
-                    <span class="badge ${badgeClass}">${item.badge || ''}</span>
+                    <span class="${badgeClass}">${item.badge || ''}</span>
                     <div class="thumbnail-container">
                         <img src="${item.thumbnail}" alt="${item.title}" class="thumbnail" onerror="this.src='https://placehold.co/600x400/f5f5f7/808080?text=No+Image'">
                     </div>
@@ -282,7 +281,7 @@
                     </div>
                 `;
 
-                // Jika folder berisi link, arahkan click ke folder (tombol panah)
+                // Jika folder berisi link, arahkan click ke folder
                 if(item.folder && item.folder !== "#") {
                     card.addEventListener('click', () => {
                         window.location.href = item.folder;
@@ -291,6 +290,26 @@
 
                 grid.appendChild(card);
             });
+        }
+
+        function normalizeBadge(badge) {
+            // Normalisasi nama badge ke class CSS yang sesuai
+            const badgeClass = badge.toLowerCase().split(' ').join('-');
+            let result = '';
+            
+            // Mapping badge ke class CSS
+            if (badge.includes('Popular') || badge === '') return 'popular';
+            if (badge.includes('New')) return 'new';
+            if (badge.includes('Best Seller') || badge.includes('Best Choose')) return 'best-seller';
+            if (badge.includes('Heritage')) return 'heritage';
+            if (badge.includes('Modern Choice')) return 'modern-choice';
+            if (badge.includes('Jawa')) return 'jawa';
+            if (badge.includes('Elegance')) return 'elegance';
+            if (badge.includes('Premium')) return 'premium';
+            if (badge.includes('Fresh')) return 'fresh';
+            if (badge.includes('Classic')) return 'classic';
+            
+            return badgeClass; // Fallback jika badge tidak cocok
         }
     </script>
 </body>
